@@ -1,3 +1,5 @@
+原文地址（https://docs.python.org/3/library/pickle.html）
+
 pickle — Python object serialization
 Source code: Lib/pickle.py
 
