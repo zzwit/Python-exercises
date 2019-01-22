@@ -370,7 +370,7 @@ class novelMarge(object):
         #             rate_number += 1
         #             if limit_val_id == limit_val['_id']:
         #                 from_limit_val_id = from_limit_val['_id']
-
+        chapters_new_name = ''
         #可以进行小说合并的了
         if from_up_id:
             form_chapters_list = form_path_chapters_list[from_up_id::]
@@ -379,43 +379,50 @@ class novelMarge(object):
                 for index, vs in enumerate(form_chapters_list):
 
                     if from_up_id != vs['_id']:
-                        chapter_id += 1
-                        chapters_list_data = {}
-                        chapters_list_ads = {}
-                        # 更新的新的章节
-                        chapters_list_data['source_id'] = novel_chapters_info[update_novels_id]
-                        chapters_list_data['url'] = vs['url']
-                        chapters_list_data['add_time'] = vs['add_time']
-                        chapters_list_data['weight'] = 1
-                        #合并小说目录信息
-                        chapters_list_ads['_id'] = chapter_id
-                        chapters_list_ads['name'] = vs['name']
-                        chapters_list_ads['add_time'] = vs['add_time']
-                        #生成章节的目录列表
-                        self.add_novel_chapter_list(mage_novel_id, chapter_id, chapters_list_data)
-                        mage_chapters_list.append(chapters_list_ads)
-                        chapters_new_name = vs['name']
+                        form_valus_name = self.changeChineseNumToArab(vs['name'])
+                        rate = difflib.SequenceMatcher(None, mage_name, form_valus_name).quick_ratio()
+                        rate = int(round(rate, 2) * 100)
+                        if rate < 86:
+                            chapter_id += 1
+                            chapters_list_data = {}
+                            chapters_list_ads = {}
+                            # 更新的新的章节
+                            chapters_list_data['source_id'] = novel_chapters_info[update_novels_id]
+                            chapters_list_data['url'] = vs['url']
+                            chapters_list_data['add_time'] = vs['add_time']
+                            chapters_list_data['weight'] = 1
+                            #合并小说目录信息
+                            chapters_list_ads['_id'] = chapter_id
+                            chapters_list_ads['name'] = vs['name']
+                            chapters_list_ads['add_time'] = vs['add_time']
+                            #生成章节的目录列表
+                            self.add_novel_chapter_list(mage_novel_id, chapter_id, chapters_list_data)
+                            mage_chapters_list.append(chapters_list_ads)
+                            chapters_new_name = vs['name']
 
-                if mage_chapters_list:
-                    with open(newsPath, 'w') as f:
-                        f.write(json.dumps(mage_chapters_list, ensure_ascii=False))
 
-                # 更新章节的内容的问题
-                cursor = self.mysql.cursor()
-                update_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                count =  chapter_id
-                chapters_up_sql = 'update novel_chapters set is_sync=0,count=%s,new_name="%s",update_time="%s" where novels_id=%s' %(count,chapters_new_name,update_time,mage_novel_id)
 
-                cursor.execute(chapters_up_sql)
+                if chapters_new_name:
+                    if mage_chapters_list:
+                        with open(newsPath, 'w') as f:
+                            f.write(json.dumps(mage_chapters_list, ensure_ascii=False))
 
-                instr = 'insert into update_chapters_list (chapters_name,update_time,novel_id) VALUES'
-                instr += '(%s,%s,%s)'
-                cursor.execute(instr, args=(chapters_new_name,update_time,mage_novel_id))
-                self.mysql.commit()
-                self.new_chapter_push(mage_novel_id,mage_novel_name)
+                    # 更新章节的内容的问题
+                    cursor = self.mysql.cursor()
+                    update_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                    count =  chapter_id
+                    chapters_up_sql = 'update novel_chapters set is_sync=0,count=%s,new_name="%s",update_time="%s" where novels_id=%s' %(count,chapters_new_name,update_time,mage_novel_id)
 
-                msg = "合并成功小说ID：%s" %(mage_novel_id)
-                logging.info(msg)
+                    cursor.execute(chapters_up_sql)
+
+                    instr = 'insert into update_chapters_list (chapters_name,update_time,novel_id,novel_name) VALUES'
+                    instr += '(%s,%s,%s,%s)'
+                    cursor.execute(instr, args=(chapters_new_name,update_time,mage_novel_id,mage_novel_name))
+                    self.mysql.commit()
+                    self.new_chapter_push(mage_novel_id,mage_novel_name)
+
+                    msg = "合并成功小说ID：%s" %(mage_novel_id)
+                    logging.info(msg)
             return mage_chapters_list
         else:
 
