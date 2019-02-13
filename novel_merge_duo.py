@@ -12,41 +12,40 @@ import difflib
 import sys
 
 
+# DB_HOST = '127.0.0.1'
+# DB_USER = 'novelcode'
+# DB_PWD = 'RvZ@7^yGR2waQNLJ'
+# DB_NAME = 'novel_collect'
+# DB_CHARSET = 'utf8'
+# DB_PORT = 3306
+#
+#
+# redis_config = {
+#     "host": "221.195.1.100",
+#     "port": 26890,
+#     "db": 4,
+#     "password": 'plOTrEdLUnFGYJzo',
+# }
+
+
 DB_HOST = '127.0.0.1'
-DB_USER = 'novelcode'
-DB_PWD = 'RvZ@7^yGR2waQNLJ'
+DB_USER = 'root'
+DB_PWD = 'root'
 DB_NAME = 'novel_collect'
 DB_CHARSET = 'utf8'
 DB_PORT = 3306
-
+# redis
 
 redis_config = {
-    "host": "61.160.196.39",
-    "port": 26890,
+    "host": "127.0.0.1",
+    "port": 6379,
     "db": 4,
-    "password": 'DH56ji2(3u^4',
+    "password": '',
 }
 
 
 
-# DB_HOST = '127.0.0.1'
-# DB_USER = 'root'
-# DB_PWD = 'root'
-# DB_NAME = 'novel_collect'
-# DB_CHARSET = 'utf8'
-# DB_PORT = 3306
-# # redis
-#
-# redis_config = {
-#     "host": "127.0.0.1",
-#     "port": 6379,
-#     "db": 4,
-#     "password": '',
-# }
-
-
-
-FILE_BASE = "/data/book/"
+FILE_BASE = "/data1/book/"
 
 class novelMarge(object):
 
@@ -78,6 +77,20 @@ class novelMarge(object):
         获取所有的来源 地址数据 进行书籍匹配和合并 匹配到 90 以上
     """
     def get_update_novel_gather(self):
+        lists=[]
+        adbb = {}
+        adbb['name'] = 1
+        adbb['sex'] = 2
+
+        lists.append(adbb)
+        cc = {}
+        cc['name'] = 2
+        cc['sex'] = 4
+        cc['wixiaowen'] = 4
+
+        lists.append(cc)
+        print(lists)
+        exit()
         # if self.sredis.get("update_novel"):
         #     print("程序在进行中。请等待。。。")
         #     exit()
@@ -104,7 +117,6 @@ class novelMarge(object):
                 else:
 
                     if novels_list:
-                        page_index +=1
                         for index,valss in enumerate(novels_list):
                             #获取的所有的相关的章节的最近更新的数量
                             novel_chapters_sql = "select novels_id,count from  novel_chapters where novels_id IN(%s)" %(valss[4])
@@ -134,9 +146,8 @@ class novelMarge(object):
                                 novel_chapters_info[neaten_vl[0]] = neaten_vl[1]
 
                             #来源 数据优先处理
-                            update_chapters_number = novel_chapters_list.get(valss[6])
-                            if update_chapters_number == None:
-                                continue
+                            update_chapters_number = novel_chapters_list[valss[6]]
+
                             if update_chapters_number > mage_chapters_number:
                                 form_path_list = "%s%s/%s/chapter.json" % (FILE_BASE, novel_chapters_info[valss[6]], valss[6])
                                 form_recs  = os.path.exists(form_path_list)
@@ -268,11 +279,11 @@ class novelMarge(object):
         合并新书必须拷贝章节内容
     """
     def add_new_novels(self):
-        # if self.sredis.get("add_new_novels"):
-        #     print("程序在进行中。请等待。。。")
-        #     exit()
-        # else:
-        #     self.sredis.set("add_new_novels", 1)
+        if self.sredis.get("add_new_novels"):
+            print("程序在进行中。请等待。。。")
+            exit()
+        else:
+            self.sredis.set("add_new_novels", 1)
 
         lg = 0
         page_index = 0
@@ -281,7 +292,7 @@ class novelMarge(object):
         try:
             while lg == 0:
                 page = page_index * limit
-                sql = "select id,novels_ids from `novel_novels_gather` where new_novels_id=0  order by id desc limit %d,%d" % (page, limit)
+                sql = "select id,novels_ids from `novel_novels_gather` where new_novels_id =0 ORDER BY  weight asc limit %d,%d" % (page, limit)
 
                 cursor.execute(sql)
                 novels_ids = cursor.fetchall()
@@ -290,15 +301,12 @@ class novelMarge(object):
                 if lencut == 0:
                     lg = 1
                     cursor.close()
-                    self.sredis.delete("add_new_novels")
-                    exit()
                 else:
                     if novels_ids:
-                        page_index +=1
                         for val in novels_ids:
 
                             #获取小说的第一个站点
-                            novel_id_sql = "select novels_id from novel_novels_neaten where source_id in(122,123,124,62,93,3,1,82,15,4) and novels_id in(%s)" %(val[1])
+                            novel_id_sql = "select novels_id from novel_novels_neaten where source_id in(3,1,82,15,4) and novels_id in(%s)" %(val[1])
                             cursor.execute(novel_id_sql)
                             novels_ids = cursor.fetchone()
                             if novels_ids == None:
@@ -308,22 +316,20 @@ class novelMarge(object):
                                 novels_ids = novels_ids[0]
 
                             novels_ids = int(novels_ids)
-
                             print("分析原小说ID",novels_ids)
                             novel_novels_sql = "select * from novel_novels where id=%d " %(novels_ids)
                             cursor.execute(novel_novels_sql)
                             novels_info = cursor.fetchone()
 
+
                             if novels_info:
                                 name_author_que_str = "%s$c%s" %(novels_info[1],novels_info[6])
-                                print(name_author_que_str)
                                 name_author_que = hashlib.md5(name_author_que_str.encode()).hexdigest()
                                 #查看是否填写过新书
                                 restar_sql = "select id from novel_novels where name_author_que='%s'" %(name_author_que)
-
+                                
                                 cursor.execute(restar_sql)
                                 recs  = cursor.fetchone()
-
                                 if recs == None:
                                    
                                     fromPath = "%s%s/%s/chapter.json" % (FILE_BASE, novels_info[16], novels_info[0])
@@ -349,7 +355,6 @@ class novelMarge(object):
                                             cursor.execute(instr,args= (novels_info[1],novels_info[2],novels_info[3],novels_info[4],novels_info[5],novels_info[6],novels_info[7],novels_info[8],novels_info[9],novels_info[10],novels_info[11],novels_info[12],novels_info[13],novels_info[14],novels_info[15],35,novels_info[17],name_author_que,novels_info[0]))
                                             self.mysql.commit()
                                             new_novel_id = cursor.lastrowid
-                                            print("新书ID:",new_novel_id)
                                         else:
                                             new_novel_id = False
                                         if new_novel_id:
@@ -375,8 +380,6 @@ class novelMarge(object):
                                                         chapters_list_data['source_id'] = novels_info[16]
                                                         chapters_list_data['url'] = chapter['url']
                                                         chapters_list_data['add_time'] = chapter['add_time']
-                                                        chapters_list_data['weight'] = 1
-
                                                         self.add_novel_chapter_list(new_novel_id, chapter['_id'],chapters_list_data)
                                                         new_chapter.append(new_chapters)
                                                         #最新章节
@@ -394,37 +397,25 @@ class novelMarge(object):
                                                     self.mysql.commit()
                                                     #添加的更新的最新章节的信息
                                                     add_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                                                    insert_sql = 'insert into novel_chapters (new_name,path,novels_id,update_time,add_time,count,is_sync) VALUES ("%s","%s",%d,"%s","%s",%d,0)' %(new_chapter_name,novel_chapters_path,new_novel_id,add_time,add_time,upcount)
+                                                    insert_sql = 'insert into novel_chapters (new_name,path,novels_id,update_time,add_time,count,is_sync) VALUES ("%s","%s",%d,"%s","%s",%d,1)' %(new_chapter_name,novel_chapters_path,new_novel_id,add_time,add_time,upcount)
                                                     cursor.execute(insert_sql)
                                                     self.mysql.commit()
                                                 else:
                                                     print("暂无数据")
                                                 print("生成成功")
                                         else:
-                                            file_error_path = "/data/www/novel_script/logs/book_no_chapter_list_%s.log" % (
-                                                time.strftime("%Y-%m-%d", time.localtime()))
-                                            with open(file_error_path, "a+") as file_error:
-                                                error_novels_ids = str(novels_ids) + ',\n'
-                                                file_error.write(error_novels_ids)
                                             print("新增数据失败")
                                 else:
                                     print("已经存在")
                             else:
-                                file_error_path = "/data/www/novel_script/logs/book_non_bookID_%s.log" % (
-                                time.strftime("%Y-%m-%d", time.localtime()))
-                                with open(file_error_path, "a+") as file_error:
-                                    error_novels_ids = str(novels_ids) + ',\n'
-                                    file_error.write(error_novels_ids)
                                 print("不存在")
                     else:
                         print("没有相似小说")
         except Exception as e:
             print(e)
             self.sredis.delete("add_new_novels")
-            exit()
 
         self.sredis.delete("add_new_novels")
-        exit()
 
     """
      生成的子目录信息
@@ -557,17 +548,17 @@ class novelMarge(object):
             self.mysql.commit()
             cursor.close()
 if __name__ == '__main__':
-    sys_name = sys.argv[1]
+    # sys_name = sys.argv[1]
     r = novelMarge()
-
-    if sys_name == "update_novel":
-        r.get_update_novel_gather()
-    elif sys_name == "add_new_novels":
-        r.add_new_novels()
-    elif sys_name == "mage_novel_neaten":
-        r.get_novel_neaten()
-    elif sys_name == "novel_neaten":
-        r.novel_neaten()
+    r.get_update_novel_gather()
+    # if sys_name == "update_novel":
+    #     r.get_update_novel_gather()
+    # elif sys_name == "add_new_novels":
+    #     r.add_new_novels()
+    # elif sys_name == "mage_novel_neaten":
+    #     r.get_novel_neaten()
+    # elif sys_name == "novel_neaten":
+    #     r.novel_neaten()
 
         # 第四步 把多个章节内容合并成list.json 格式
         # self.get_update_novel_gather()

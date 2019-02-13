@@ -30,7 +30,7 @@ m_mysql.cursorclass = pymysql.cursors.DictCursor
 cursor = m_mysql.cursor()
 
 # 获取的所有的相关的章节的最近更新的数量
-novel_chapters_sql = "select * from  novel_novels_gather where id=23349"
+novel_chapters_sql = "select * from  novel_novels_gather where id=2"
 cursor.execute(novel_chapters_sql)
 novel_chapters = cursor.fetchall()
 
@@ -38,7 +38,7 @@ novel_chapters = cursor.fetchall()
 
 for val in novel_chapters:
     #val = str(val)
-    val['up_novels_id'] = "186128"
+    val['up_novels_id'] = "165465"
     val = json.dumps(val,ensure_ascii=False)
     print(val)
     rc.publish("UPNOVELS:CHAPTER",val)

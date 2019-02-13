@@ -25,7 +25,7 @@ for key in common_used_numerals_tmp:
 
 
 # 本地
-
+#
 # DB_HOST = '127.0.0.1'
 # DB_USER = 'root'
 # DB_PWD = 'root'
@@ -72,6 +72,9 @@ my_redis = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, pass
 
 FILE_BASE = "/data/book/"
 
+SOURCE_ID = 555333
+
+
 #过滤器
 class FilterTag(object):
 
@@ -102,6 +105,7 @@ class novelMarge(object):
     def update_novel_gather(self,novels_list):
 
         cursor = self.mysql.cursor()
+
         #try:
         if novels_list:
 
@@ -122,6 +126,7 @@ class novelMarge(object):
             novel_chapters = cursor.fetchall()
             novel_chapters_list = {}
 
+
             #计算出最更新最大的
             update_novels_id = 0
             for index,vals in enumerate(novel_chapters):
@@ -138,7 +143,7 @@ class novelMarge(object):
 
 
             # 获取的合并的书籍所有的章节内容
-            newsPath = "%s%s/%s/chapter.json" % (FILE_BASE, 35, mage_novel_id)
+            newsPath = "%s%s/%s/chapter.json" % (FILE_BASE, SOURCE_ID, mage_novel_id)
             new_path_recss = os.path.exists(newsPath)
             if new_path_recss == False:
                 file_error_path = "/data/www/novel_script/logs/book_non_existent_%s.log" %(time.strftime("%Y-%m-%d", time.localtime()))
@@ -233,7 +238,7 @@ class novelMarge(object):
 
 
                                         # 合并之后的数据
-                                        mage_chapters_list_file_path = "%s%s/%s/%d/list.json" % (FILE_BASE, 35, mage_novel_id, mage_vals['_id'])
+                                        mage_chapters_list_file_path = "%s%s/%s/%d/list.json" % (FILE_BASE, SOURCE_ID, mage_novel_id, mage_vals['_id'])
 
                                         file_status = os.access(mage_chapters_list_file_path, os.R_OK | os.W_OK | os.X_OK)
                                         if file_status == False:
@@ -276,8 +281,8 @@ class novelMarge(object):
                                         else:
                                             logging.info(form_name_msg+"章节的已经更新到最新")
 
-                            update_novel_novels_neaten_sql = "update novel_novels_neaten set count=%s where novels_id=%s" % (form_chapters_count, neaten_value[0])
-                            cursor.execute(update_novel_novels_neaten_sql)
+                            # update_novel_novels_neaten_sql = "update novel_novels_neaten set count=%s where novels_id=%s" % (form_chapters_count, neaten_value[0])
+                            # cursor.execute(update_novel_novels_neaten_sql)
                     else:
 
                         logging.info(form_name_msg+"暂无新的章节的更新信息")
@@ -345,56 +350,6 @@ class novelMarge(object):
                 if from_up_id > 0:
                      break
 
-        # 书籍检查的一下，是否是正常的更新的数据，如果的不是正常的更新数据那么就不执行了， 有更新的数据的提前过滤掉的，在将的当前的更新的数据同步合并一下目录文件 ， 合并完成将合并的书籍目录列表返回的去
-        # if form_novels_id != update_novels_id:
-
-        # max_mage_chapters_number = mage_chapters_number + 2
-        # min_mage_chapters_number = int(mage_chapters_number - 3) if int(mage_chapters_number - 3) >0 else 0
-        #
-        # #两个之间的对比一下匹配度
-        # mage_chapters_limit_list = mage_chapters_list[min_mage_chapters_number:max_mage_chapters_number]
-        #
-        # form_path_chapters_limit_list = form_path_chapters_list[min_mage_chapters_number:max_mage_chapters_number]
-        #
-        # #初始化匹配数量
-        # rate_number = 0
-        # from_limit_val_id = 0
-        # #从0开始计算
-        # mage_chapters_limit_len = len(mage_chapters_limit_list)
-        # mage_chapters_limit_len = mage_chapters_limit_len - 1
-        # limit_val_id = mage_chapters_limit_list[mage_chapters_limit_len]['_id']
-
-        # max_mage_chapters_number = mage_chapters_number + 2
-        # min_mage_chapters_number = int(mage_chapters_number - 3) if int(mage_chapters_number - 3) > 0 else 0
-        # form_path_chapters_limit_list = form_path_chapters_list[min_mage_chapters_number::]
-        # 两个之间的对比一下匹配度
-
-
-        #找到的合并站点小说的最后一章节
-        #mage_chapters_limit_list = mage_chapters_list[mage_chapters_number]
-        #在找到的来源的小说的所在的问题值
-
-        # mage_chapters_limit_len = 0
-        # form_path_chapters_limit_list = []
-        # form_path_chapters_limit_list = []
-        # #匹配最好
-        # for index,from_limit_val in enumerate(form_path_chapters_limit_list):
-        #
-        #     if index > mage_chapters_limit_len:
-        #         if from_limit_val_id == 0:
-        #             limit_val = mage_chapters_limit_list[mage_chapters_limit_len]
-        #         else:
-        #             limit_val = None
-        #     else:
-        #         limit_val = mage_chapters_limit_list[index]
-        #
-        #     if limit_val:
-        #         rate = difflib.SequenceMatcher(None, limit_val['name'], from_limit_val['name']).quick_ratio()
-        #         rate = int(round(rate, 2) * 100)
-        #         if rate > 95:
-        #             rate_number += 1
-        #             if limit_val_id == limit_val['_id']:
-        #                 from_limit_val_id = from_limit_val['_id']
         chapters_new_name = ''
         #可以进行小说合并的了
         if from_up_id:
@@ -432,18 +387,18 @@ class novelMarge(object):
                             f.write(json.dumps(mage_chapters_list, ensure_ascii=False))
 
                     # 更新章节的内容的问题
-                    cursor = self.mysql.cursor()
-                    update_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-                    count =  chapter_id
-                    chapters_up_sql = 'update novel_chapters set is_sync=0,count=%s,new_name="%s",update_time="%s" where novels_id=%s' %(count,chapters_new_name,update_time,mage_novel_id)
-
-                    cursor.execute(chapters_up_sql)
-
-                    instr = 'insert into update_chapters_list (chapters_name,update_time,novel_id,novel_name) VALUES'
-                    instr += '(%s,%s,%s,%s)'
-                    cursor.execute(instr, args=(chapters_new_name,update_time,mage_novel_id,mage_novel_name))
-                    self.mysql.commit()
-                    self.new_chapter_push(mage_novel_id,mage_novel_name)
+                    # cursor = self.mysql.cursor()
+                    # update_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                    # count =  chapter_id
+                    # chapters_up_sql = 'update novel_chapters set is_sync=0,count=%s,new_name="%s",update_time="%s" where novels_id=%s' %(count,chapters_new_name,update_time,mage_novel_id)
+                    #
+                    # cursor.execute(chapters_up_sql)
+                    #
+                    # instr = 'insert into update_chapters_list (chapters_name,update_time,novel_id,novel_name) VALUES'
+                    # instr += '(%s,%s,%s,%s)'
+                    # cursor.execute(instr, args=(chapters_new_name,update_time,mage_novel_id,mage_novel_name))
+                    # self.mysql.commit()
+                    #self.new_chapter_push(mage_novel_id,mage_novel_name)
 
                     msg = "合并成功小说ID：%s" %(mage_novel_id)
                     logging.info(msg)
@@ -488,25 +443,27 @@ class novelMarge(object):
 
         return from_up_id
     """
-     生成的子目录信息
-     source_id 站点ID
-     novels_id 书籍ID
-     chapter_id 章节ID
-     data 列表的字典
-    """
-    def add_novel_chapter_list(self,novels_id,chapter_id,data):
+         生成的子目录信息
+         source_id 站点ID
+         novels_id 书籍ID
+         chapter_id 章节ID
+         data 列表的字典
+        """
 
-        path = "%s%s/%s/%s/" % (FILE_BASE, 35, novels_id,chapter_id)
-        rec = os.path.exists(path)
-        file_path = path + "list.json"
-        if rec == False:
-            os.makedirs(path)
-            list_data = []
-        else:
-            with open(file_path,'r') as fr:
-                list_data = json.loads(fr.read())
+    def add_novel_chapter_list(self, novels_id, chapter_id, data):
 
-        with open(file_path,mode='w') as f:
+        path = "%s%s/%s/" % (FILE_BASE, SOURCE_ID, novels_id)
+        file_path = path + "list_" + str(chapter_id) + ".json"
+        rec = os.path.exists(file_path)
+        list_data = []
+        if rec == True:
+            with open(file_path, 'r') as fr:
+                lists = fr.read()
+                if lists:
+                    list_data = json.loads(lists)
+                else:
+                    list_data = []
+        with open(file_path, mode='w') as f:
             if rec == True:
                 source_id_rel = 0
                 for ival in list_data:
@@ -516,10 +473,8 @@ class novelMarge(object):
                     list_data.append(data)
             else:
                 list_data.append(data)
-            f.write(json.dumps(list_data,ensure_ascii=False))
+            f.write(json.dumps(list_data, ensure_ascii=False))
         return 1
-
-
 
     """
         大小写的转换的
@@ -592,5 +547,7 @@ for item in ps.listen():		#监听状态：有消息发布了就拿过来
         logging.info(msg)
         mage_novel_id = novels_list['new_novels_id']
         if mage_novel_id:
+            time.sleep(4)
             novel_up_model.update_novel_gather(novels_list)
+            print("成功")
 
