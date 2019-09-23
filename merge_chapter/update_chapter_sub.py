@@ -6,7 +6,7 @@ import logging
 import json
 import os
 
-from merge_chapter.merge_mongo import *
+from merge_mongo import *
 
 """
 Redis 实现的订阅  点阅者
@@ -28,34 +28,34 @@ for key in common_used_numerals_tmp:
 
 # 本地
 
-DB_HOST = '127.0.0.1'
-DB_USER = 'root'
-DB_PWD = 'root'
-DB_NAME = 'novel_collect'
-DB_CHARSET = 'utf8'
-DB_PORT = 3306
-
-REDIS_HOST = "127.0.0.1"
-REDIS_PORT = 6379
-REDIS_DB   = 3
-REDIS_PWD  = ''
+# DB_HOST = '127.0.0.1'
+# DB_USER = 'root'
+# DB_PWD = 'root'
+# DB_NAME = 'novel_collect'
+# DB_CHARSET = 'utf8'
+# DB_PORT = 3306
+#
+# REDIS_HOST = "127.0.0.1"
+# REDIS_PORT = 6379
+# REDIS_DB   = 3
+# REDIS_PWD  = ''
 
 
 
 
 # 线上
 #Mysql
-# DB_HOST = '58.216.10.18'
-# DB_USER = 'novelcode'
-# DB_PWD = 'RvZ@7^yGR2waQNLJ'
-# DB_NAME = 'novel_collect'
-# DB_CHARSET = 'utf8'
-# DB_PORT = 3306
-# # Redis
-# REDIS_HOST = "61.160.196.39"
-# REDIS_PORT = 26890
-# REDIS_DB = 3
-# REDIS_PWD = 'DH56ji2(3u^4'
+DB_HOST = '192.168.0.18'
+DB_USER = 'novelcode'
+DB_PWD = 'RvZ@7^yGR2waQNLJ'
+DB_NAME = 'novel_collect'
+DB_CHARSET = 'utf8'
+DB_PORT = 3306
+# Redis
+REDIS_HOST = "192.168.0.39"
+REDIS_PORT = 26890
+REDIS_DB = 3
+REDIS_PWD = 'DH56ji2(3u^4'
 
 #数据库链接
 m_mysql = pymysql.Connect(
@@ -150,6 +150,9 @@ class novelMarge(object):
 
             mage_chapters_list = self.get_chapter_list(SOURCE_ID,mage_novel_id)
 
+            if not mage_chapters_list:
+                logging.info("没有内容")
+                return True;
             # 合并最新书籍章节数量
             mage_chapters_number = len(mage_chapters_list)
             novel_chapters_info = {}
@@ -176,9 +179,8 @@ class novelMarge(object):
             logging.info("合并新目录")
             #测试别的程序 TODO 这一块速度很慢这个要检查一下
 
-
             mage_chapters_list = self.chack_new_chapter(update_chapters_number,mage_chapters_number,update_novels_id,novel_chapters_info,mage_chapters_list,newsPath,mage_novel_id,mage_novel_name)
-            print("到这里的速度")
+
             for neaten_value in novel_novels_neaten:
 
                 #初始化更新的章节的数量
@@ -592,7 +594,7 @@ for item in ps.listen():		#监听状态：有消息发布了就拿过来
     if item['type'] == 'message':
         novels_list = json.loads(item['data'])
         novel_up_model = novelMarge()
-        msg = "更新小说：%s" % (item['data'])
+        msg = "更新记录小说：%s" % (item['data'])
         logging.info(msg)
         mage_novel_id = novels_list['new_novels_id']
         if mage_novel_id:

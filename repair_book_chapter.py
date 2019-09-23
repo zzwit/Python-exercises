@@ -13,28 +13,12 @@ author:xiaowen
 主要是针对合并站书籍进行修复功能
 """
 
-
-# 线上
-#Mysql
-DB_HOST = '58.216.10.18'
-DB_USER = 'novelcode'
-DB_PWD = 'RvZ@7^yGR2waQNLJ'
+DB_HOST = '127.0.0.1'
+DB_USER = 'root'
+DB_PWD = 'root'
 DB_NAME = 'novel_collect'
 DB_CHARSET = 'utf8'
 DB_PORT = 3306
-# Redis
-REDIS_HOST = "61.160.196.39"
-REDIS_PORT = 26890
-REDIS_DB = 3
-REDIS_PWD = 'DH56ji2(3u^4'
-
-
-# DB_HOST = '127.0.0.1'
-# DB_USER = 'root'
-# DB_PWD = 'root'
-# DB_NAME = 'novel_collect'
-# DB_CHARSET = 'utf8'
-# DB_PORT = 3306
 # # redis
 #
 redis_config = {
@@ -165,89 +149,6 @@ class novelMarge(object):
         if mage_novel_source_list:
             for index,vals in enumerate(mage_novel_source_list):
                 self.source_chapterlist(vals[0],vals[1],mage_chapters_list,mage_novel_id)
-
-
-    # def source_chapterlist(self,novel_id,source_id,mage_chapters_list,mage_novel_id):
-    #
-    #     file_path = "%s%s/%s/chapter.json" % (FILE_BASE, source_id, novel_id)
-    #     rec = os.path.exists(file_path)
-    #     if rec == False:
-    #         return 1
-    #     else:
-    #         list_data = []
-    #
-    #         with open(file_path, "r") as mage_chapters_f:
-    #             from_chapters_file_list = mage_chapters_f.read()
-    #             form_chapters_limit = json.loads(from_chapters_file_list)
-    #
-    #         for index, mage_vals in enumerate(mage_chapters_list):
-    #
-    #             minnumber = int(index - 10) if int(index - 10) > 0 else 0
-    #             maxnumber = int(index + 6)
-    #
-    #             # 原网站的章节列表
-    #             for index, form_valus in enumerate(form_chapters_limit[minnumber:maxnumber]):
-    #                 rate = 0
-    #                 if mage_vals.get('name') and form_valus.get('name'):
-    #                     mage_vals_name = self.changeChineseNumToArab(mage_vals['name'])
-    #                     form_valus_name = self.changeChineseNumToArab(form_valus['name'])
-    #                     rate = difflib.SequenceMatcher(None, mage_vals_name, form_valus_name).quick_ratio()
-    #                     rate = int(round(rate, 2) * 100)
-    #                 if rate > 90:
-    #                     form_chapters_file_list = {}
-    #
-    #                     # 合并之后的数据
-    #                     mage_chapters_list_file_path = "%s%s/%s/%d/list.json" % (FILE_BASE, SOURCE_ID, mage_novel_id, mage_vals['_id'])
-    #
-    #                     file_status = os.access(mage_chapters_list_file_path, os.R_OK | os.W_OK | os.X_OK)
-    #                     if file_status == False:
-    #                         # file_error_path = "/data/www/novel_script/logs/book_power_%s.log" %(time.strftime("%Y-%m-%d", time.localtime()))
-    #                         # with open(file_error_path, "a+") as file_error:
-    #                         #     error_book_id = ','+str(mage_novel_id)
-    #                         #     file_error.write(error_book_id)
-    #                         continue
-    #                     mage_chapters_path_recss = os.path.exists(mage_chapters_list_file_path)
-    #
-    #                     if mage_chapters_path_recss == False:
-    #                         continue
-    #
-    #                     with open(mage_chapters_list_file_path, "r") as mage_chapters_f:
-    #                         mage_chapters_file_list = mage_chapters_f.read()
-    #                         mage_chapters_file_list = json.loads(mage_chapters_file_list)
-    #
-    #                     # 检查来源的是否存在的了
-    #                     is_status = 0
-    #                     for vs in mage_chapters_file_list:
-    #                         if vs['source_id'] == form_source_id:
-    #                             is_status = 1
-    #
-    #                     if is_status == 0:
-    #                         # 来源的站点的数据整合
-    #                         form_chapters_file_list['source_id'] = form_source_id
-    #                         form_chapters_file_list['url'] = form_valus['url']
-    #                         form_chapters_file_list['add_time'] = form_valus['add_time']
-    #                         mage_chapters_file_list.append(form_chapters_file_list)
-    #                         # 添加的数据
-    #                         mage_chapters_file_list = json.dumps(mage_chapters_file_list,
-    #                                                              ensure_ascii=False)
-    #                         with open(mage_chapters_list_file_path, "w") as mage_chapters_f:
-    #                             mage_chapters_f.write(mage_chapters_file_list)
-    #
-    #                         msg = "原站点%s更新至35 原书籍ID:%s更新的至书籍ID%s更新章节：%s" % (
-    #                         form_source_id, neaten_value[0], mage_novel_id, mage_vals['_id'])
-    #                         logging.info(msg)
-    #                         # 更新的当前的书籍更新的总数
-    #
-    #                     else:
-    #                         logging.info(form_name_msg + "章节的已经更新到最新")
-    #
-    #         update_novel_novels_neaten_sql = "update novel_novels_neaten set count=%s where novels_id=%s" % (
-    #         form_chapters_count, neaten_value[0])
-    #         cursor.execute(update_novel_novels_neaten_sql)
-    #
-    #
-    #
-    #     return 1
     """
        生成的子目录信息
        source_id 站点ID

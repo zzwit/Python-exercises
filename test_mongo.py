@@ -98,7 +98,7 @@ novels = {
     }
 
 }
-host = '221.195.1.228'
+host = '127.0.0.1'
 client = MongoClient(host, 27017,username="admin",password="admin@1234")
 #连接mydb数据库,账号密码认证
 db = client.source_35    # mydb数据库，同上解释

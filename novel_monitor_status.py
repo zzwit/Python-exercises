@@ -4,37 +4,12 @@ import time
 import redis
 import json
 
-
-
-# DB_HOST = '127.0.0.1'
-# DB_USER = 'root'
-# DB_PWD = 'root'
-# DB_NAME = 'novel_collect'
-# DB_CHARSET = 'utf8'
-# DB_PORT = 3306
-#
-# REDIS_HOST = "127.0.0.1"
-# REDIS_PORT = 6379
-# REDIS_DB = 4
-# REDIS_PWD = 'DH56ji2(3u^4'
-
 DB_HOST = '127.0.0.1'
 DB_USER = 'kusoucode'
 DB_PWD = 'RvZ@7^yGR2waQNLJ'
 DB_NAME = 'novel_collect'
 DB_CHARSET = 'utf8'
 DB_PORT = 3306
-
-# #Redis
-# REDIS_HOST = "61.160.196.39"
-# REDIS_PORT = 26890
-# REDIS_DB = 3
-# REDIS_PWD = 'DH56ji2(3u^4'
-#
-#
-# #Redis 链接
-# my_redis = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, password=REDIS_PWD)
-
 
 m_mysql = pymysql.Connect(
     host=DB_HOST,

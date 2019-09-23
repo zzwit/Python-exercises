@@ -26,34 +26,17 @@ for key in common_used_numerals_tmp:
 
 # 本地
 
-# DB_HOST = '127.0.0.1'
-# DB_USER = 'root'
-# DB_PWD = 'root'
-# DB_NAME = 'novel_collect'
-# DB_CHARSET = 'utf8'
-# DB_PORT = 3306
-#
-# REDIS_HOST = "127.0.0.1"
-# REDIS_PORT = 6379
-# REDIS_DB   = 3
-# REDIS_PWD  = ''
-
-
-
-
-# 线上
-#Mysql
-DB_HOST = '58.216.10.18'
-DB_USER = 'novelcode'
-DB_PWD = 'RvZ@7^yGR2waQNLJ'
+DB_HOST = '127.0.0.1'
+DB_USER = 'root'
+DB_PWD = 'root'
 DB_NAME = 'novel_collect'
 DB_CHARSET = 'utf8'
 DB_PORT = 3306
-# Redis
-REDIS_HOST = "61.160.196.39"
-REDIS_PORT = 26890
-REDIS_DB = 3
-REDIS_PWD = 'DH56ji2(3u^4'
+
+REDIS_HOST = "127.0.0.1"
+REDIS_PORT = 6379
+REDIS_DB   = 3
+REDIS_PWD  = ''
 
 #数据库链接
 m_mysql = pymysql.Connect(

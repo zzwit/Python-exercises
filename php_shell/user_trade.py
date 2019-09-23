@@ -10,13 +10,6 @@ import logging
 import os, time, random
 from datetime import datetime
 
-# DB_HOST = '221.195.1.228'
-# DB_USER = 'zhaozhiwen'
-# DB_PWD = 'ERhjkp%!698dDIW'
-# DB_NAME = 'ksdatas'
-# DB_CHARSET = 'utf8'
-# DB_PORT = 3306
-
 
 DB_HOST = '192.168.2.1'
 DB_USER = 'codeuser'

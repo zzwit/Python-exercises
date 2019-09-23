@@ -104,3 +104,19 @@ client = MongoClient(host, 27017,username="admin",password="admin@1234")
 db = client.source_35    # mydb数据库，同上解释
 collection = db.novel_1   # myset集合，同上解释
 collection.insert(novels)   # 插入一条数据，如果没出错那么说明连接成功
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

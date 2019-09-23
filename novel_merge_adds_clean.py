@@ -18,46 +18,21 @@ LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 logging.basicConfig(filename='/data/www/novel_script/logs/novel_mage_list.log', level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATE_FORMAT)
 
-DB_HOST = '192.168.0.18'
-DB_USER = 'novelcode'
-DB_PWD = 'RvZ@7^yGR2waQNLJ'
+
+DB_HOST = '127.0.0.1'
+DB_USER = 'root'
+DB_PWD = 'root'
 DB_NAME = 'novel_collect'
 DB_CHARSET = 'utf8'
 DB_PORT = 3306
-
+# redis
 
 redis_config = {
-    "host": "61.160.196.39",
-    "port": 26890,
+    "host": "127.0.0.1",
+    "port": 6379,
     "db": 4,
-    "password": 'DH56ji2(3u^4',
+    "password": '',
 }
-#
-#
-#
-# MG_HOST = "221.195.1.228"
-# MG_PORT = 27017
-# MG_USER = "admin"
-# MG_PWD  = "admin@1234"
-# host = '221.195.1.228'
-# client = MongoClient(host, 27017,username="admin",password="admin@1234")
-
-
-
-# DB_HOST = '127.0.0.1'
-# DB_USER = 'root'
-# DB_PWD = 'root'
-# DB_NAME = 'novel_collect'
-# DB_CHARSET = 'utf8'
-# DB_PORT = 3306
-# # redis
-#
-# redis_config = {
-#     "host": "127.0.0.1",
-#     "port": 6379,
-#     "db": 4,
-#     "password": '',
-# }
 
 # MG_HOST = "221.195.1.228"
 # MG_PORT = 27017

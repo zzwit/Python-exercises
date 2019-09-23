@@ -11,30 +11,6 @@ import difflib
 import sys
 
 from merge_chapter.merge_mongo import *
-# DB_HOST = '127.0.0.1'
-# DB_USER = 'novelcode'
-# DB_PWD = 'RvZ@7^yGR2waQNLJ'
-# DB_NAME = 'novel_collect'
-# DB_CHARSET = 'utf8'
-# DB_PORT = 3306
-#
-#
-# redis_config = {
-#     "host": "61.160.196.39",
-#     "port": 26890,
-#     "db": 4,
-#     "password": 'DH56ji2(3u^4',
-# }
-#
-#
-#
-# MG_HOST = "221.195.1.228"
-# MG_PORT = 27017
-# MG_USER = "admin"
-# MG_PWD  = "admin@1234"
-# host = '221.195.1.228'
-# client = MongoClient(host, 27017,username="admin",password="admin@1234")
-
 
 
 DB_HOST = '127.0.0.1'

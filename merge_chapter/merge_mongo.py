@@ -120,28 +120,12 @@ novels = {
 
 }
 
-# host = '221.195.1.228'
-# client = MongoClient(host, 27017,username="admin",password="admin@1234")
-# #连接mydb数据库,账号密码认证
-# db = client.source_35    # mydb数据库，同上解释
-# print(db)
-# exit()
-# collection = db.novel_1   # myset集合，同上解释
-# collection.insert(novels)   # 插入一条数据，如果没出错那么说明连接成功
-
-#
-# MG_HOST = "221.195.1.228"
-# MG_PORT = 27017
-# MG_USER = "admin"
-# MG_PWD  = "admin@1234"
-# host = '221.195.1.228'
 
 
-
-MG_HOST = "127.0.0.1"
-MG_PORT = 27017
+MG_HOST = "192.168.0.39"
+MG_PORT = 27018
 MG_USER = "admin"
-MG_PWD  = "admin"
+MG_PWD  = "admin@1234"
 
 FILE_BASE = "/data/book/"
 

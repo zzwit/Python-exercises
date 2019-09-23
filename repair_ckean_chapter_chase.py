@@ -16,30 +16,16 @@ author:xiaowen
 
 # 线上
 #Mysql
-DB_HOST = '192.168.0.18'
-DB_USER = 'novelcode'
-DB_PWD = 'RvZ@7^yGR2waQNLJ'
+
+
+DB_HOST = '127.0.0.1'
+DB_USER = 'root'
+DB_PWD = 'root'
 DB_NAME = 'novel_collect'
 DB_CHARSET = 'utf8'
 DB_PORT = 3306
+# redis
 
-
-redis_config = {
-    "host": "61.160.196.39",
-    "port": 26890,
-    "db": 4,
-    "password": 'DH56ji2(3u^4',
-}
-
-
-# DB_HOST = '127.0.0.1'
-# DB_USER = 'root'
-# DB_PWD = 'root'
-# DB_NAME = 'novel_collect'
-# DB_CHARSET = 'utf8'
-# DB_PORT = 3306
-# # redis
-#
 redis_config = {
     "host": "127.0.0.1",
     "port": 6379,

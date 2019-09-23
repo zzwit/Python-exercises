@@ -11,38 +11,20 @@ import time
 import difflib
 import sys
 
-
 DB_HOST = '127.0.0.1'
-DB_USER = 'novelcode'
-DB_PWD = 'RvZ@7^yGR2waQNLJ'
+DB_USER = 'root'
+DB_PWD = 'root'
 DB_NAME = 'novel_collect'
 DB_CHARSET = 'utf8'
 DB_PORT = 3306
-
+# redis
 
 redis_config = {
-    "host": "61.160.196.39",
-    "port": 26890,
+    "host": "127.0.0.1",
+    "port": 6379,
     "db": 4,
-    "password": 'DH56ji2(3u^4',
+    "password": '',
 }
-
-
-
-# DB_HOST = '127.0.0.1'
-# DB_USER = 'root'
-# DB_PWD = 'root'
-# DB_NAME = 'novel_collect'
-# DB_CHARSET = 'utf8'
-# DB_PORT = 3306
-# # redis
-#
-# redis_config = {
-#     "host": "127.0.0.1",
-#     "port": 6379,
-#     "db": 4,
-#     "password": '',
-# }
 
 
 
